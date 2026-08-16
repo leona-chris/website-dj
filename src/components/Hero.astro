@@ -2,9 +2,9 @@
 import { url } from '../utils/path.js';
 ---
 
-<section class="hero min-h-screen relative overflow-hidden">
+<section id="hero-section" class="hero min-h-screen relative overflow-hidden cursor-pointer">
 
-    <!-- Background video with blur effect (w-full & h-full entfernt, da inset-0 ausreicht) -->
+    <!-- Background video with blur effect -->
     <video 
         autoplay 
         muted 
@@ -40,3 +40,12 @@ import { url } from '../utils/path.js';
     </div>
     
 </section>
+
+<script>
+    const heroSection = document.getElementById('hero-section');
+    
+    heroSection?.addEventListener('click', () => {
+        const aboutSection = document.getElementById('about');
+        aboutSection?.scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
