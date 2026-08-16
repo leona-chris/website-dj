@@ -1,5 +1,5 @@
 ---
-// src/components/Hero.astro
+import { url } from '../utils/path.js';
 ---
 
 <section class="hero min-h-screen relative overflow-hidden">
@@ -11,10 +11,10 @@
         loop 
         playsinline 
         preload="auto" 
-        poster="/img/leona_chris_hero.webp" 
+        poster={url('img/leona_chris_hero.webp')} 
         class="absolute inset-0 object-cover blur-[8px] scale-105 pointer-events-none"
     >
-        <source src="/vid/leona_chris_hero.mp4" type="video/mp4">
+        <source src={url('vid/leona_chris_hero.mp4')} type="video/mp4">
     </video>
         
     <!-- Overlay -->

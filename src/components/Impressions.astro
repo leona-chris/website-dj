@@ -1,5 +1,6 @@
 ---
 // src/components/Impressions.astro
+import { url } from '../utils/path.js';
 import { Image } from 'astro:assets';
 import photosData from '../data/photos.json';
 import videosData from '../data/videos.json';
@@ -10,15 +11,18 @@ const imageFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/*.{jp
 const photos = Object.entries(imageFiles).map(([path, module]) => {
     const fileNameWithExt = path.split('/').pop() || '';
     const baseName = fileNameWithExt.split('.')[0];
-    const caption = photosData[baseName] || 'La Leona & Chris.Me Moment';
-    return {
+    const caption = (photosData as Record<string, string>)[baseName] || 'La Leona & Chris.Me Moment';    return {
         imageObj: module.default,
         src: module.default.src,
         caption
     };
 });
 
-const videos = videosData;
+// Videos über die zentrale url()-Funktion aus path.js absichern
+const videos = videosData.map(video => ({
+    ...video,
+    src: url(video.src)
+}));
 ---
 
 <section id="gallery" class="py-24 px-8 max-w-4xl mx-auto">
