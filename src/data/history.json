@@ -1,0 +1,27 @@
+{
+  "festivals": [
+    { "name": "AfrikaBurn", "country": "8DOC • The Keepers • Why Not, South Africa" },
+    { "name": "Garbicz Festival", "country": "Poland" },
+    { "name": "Iltis Burn", "country": "Germany" }
+  ],
+  "clubs": [
+    { "name": "Bahnwärter Thiel", "city": "Munich", "country": "Germany" },
+    { "name": "Bikini Mitte", "city": "Munich", "country": "Germany" },
+    { "name": "Bootshaus", "city": "Munich", "country": "Germany" },
+    { "name": "Candy", "city": "Munich", "country": "Germany" },
+    { "name": "Charlie", "city": "Munich", "country": "Germany" },
+    { "name": "District", "city": "Cape Town", "country": "South Africa" },
+    { "name": "Fat Cat", "city": "Munich", "country": "Germany" },
+    { "name": "Kulturstrand", "city": "Munich", "country": "Germany" },
+    { "name": "Lieberscholli", "city": "Munich", "country": "Germany" },
+    { "name": "Palais Club", "city": "Munich", "country": "Germany" },
+    { "name": "Zur Gruam", "city": "Munich", "country": "Germany" }
+  ], 
+  "collectives": [
+    { "name": "Escon", "city": "Munich", "country": "Germany"}, 
+    { "name": "Sound Salon", "city": "Munich", "country": "Germany" },
+    { "name": "Traumtakt", "city": "Munich", "country": "Germany" },
+    { "name": "TeamTURBO", "city": "Munich", "country": "Germany" },
+    { "name": "Vierviertel", "city": "Munich/Berlin", "country": "Germany" }
+  ]
+}

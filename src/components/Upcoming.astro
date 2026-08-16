@@ -1,0 +1,298 @@
+<section id="gigs" class="py-24 px-8 max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Upcoming Gigs</h2>
+    </div>
+
+    <div class="overflow-x-auto bg-base-100 rounded-box shadow-xl border border-primary/20">
+        <table class="table w-full">
+            <tbody id="gig-table-body">
+                <tr>
+                    <td colspan="3" class="py-8 text-center opacity-70 text-sm">
+                        <span class="loading loading-spinner loading-md"></span> Loading gig calendar...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- MODAL FÜR GIG-DETAILS -->
+<dialog id="gig-modal" class="modal">
+    <div class="modal-box bg-base-100 shadow-2xl border border-primary/30 max-w-md">
+        <h3 id="modal-title" class="font-bold text-lg font-display flex items-center gap-2">Event Details</h3>
+        <div id="modal-content" class="py-4 text-sm"></div>
+        <div class="modal-action pt-2">
+            <form method="dialog" class="w-full">
+                <button class="btn btn-sm btn-outline border-primary/50 hover:bg-primary hover:border-primary hover:text-primary-content uppercase tracking-wider w-full font-semibold">Close</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>Close</button>
+    </form>
+</dialog>
+
+<script>
+    import { parseSheetDate, formatNiceDate, generateIcsBlobUrl } from '../utils/gigHelpers.js';
+
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbx1zBf50mm_NVXHin7ZTmNtQwRZJxvR5xTA7q0-dtmelgdMxUJ6CflvYUSwcD7Jfm5n/exec';
+
+    const modal = document.getElementById('gig-modal') as HTMLDialogElement;
+    const modalTitle = document.getElementById('modal-title');
+    const modalContent = document.getElementById('modal-content');
+    const tableBody = document.getElementById('gig-table-body');
+
+    // Modal öffnen Logik
+    function openGigDetailsModal(gig) {
+        if (!modalTitle || !modalContent || !modal) return;
+
+        const titleText = gig.title || gig.venue || 'Event Details';
+
+        let eventDateHtml = '';
+        if (gig.eventStartDate) {
+            const startStr = formatNiceDate(gig.eventStartDate) + (gig.eventStartTime ? ' ' + gig.eventStartTime : '');
+            const endStr = gig.eventEndDate ? (formatNiceDate(gig.eventEndDate) + (gig.eventEndTime ? ' ' + gig.eventEndTime : '')) : '';
+            const rangeStr = endStr ? `${startStr} - ${endStr}` : startStr;
+            eventDateHtml = `<div class="flex items-center gap-2"><span>📅</span> <span class="font-medium">${rangeStr}</span></div>`;
+        }
+
+        let venueHtml = '';
+        if (gig.venue) {
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gig.address || gig.venue)}`;
+            venueHtml = `<div class="flex items-center gap-2"><span>📍</span> <a href="${mapsUrl}" target="_blank" class="text-primary font-semibold hover:underline">${gig.venue}</a></div>`;
+        }
+
+        let linkHtml = '';
+        if (gig.link) {
+            linkHtml = `<div class="flex items-center gap-2 truncate"><span>🔗</span> <a href="${gig.link}" target="_blank" class="text-primary font-semibold hover:underline truncate">${gig.link}</a></div>`;
+        }
+
+        let playtimeSectionHtml = '';
+        if (gig.setStartTime) {
+            const playDateStr = gig.setStartDate || gig.eventStartDate || '';
+            const playDateFormatted = playDateStr ? formatNiceDate(playDateStr) : '';
+            const playTimeRange = `${gig.setStartTime}${gig.setEndTime ? ' - ' + gig.setEndTime : ''}`;
+            const playDateTimeFull = playDateFormatted ? `${playDateFormatted} ${playTimeRange}` : playTimeRange;
+
+            playtimeSectionHtml += `
+                <div class="divider divider-primary my-3"></div>
+                <div class="font-display font-bold text-sm mb-2 text-base-content">Our playtime</div>
+                <div class="space-y-1.5 font-medium">
+                    <div class="flex items-center gap-2"><span>✨</span> <span>${playDateTimeFull}</span></div>
+                    ${gig.stageFloor ? `<div class="flex items-center gap-2"><span>👯</span> <span>${gig.stageFloor}</span></div>` : ''}
+                </div>
+            `;
+        }
+
+        const icsBlobUrl = generateIcsBlobUrl(gig);
+        const fileName = `${(gig.title || 'event').toLowerCase().replace(/[^a-z0-9]/g, '-')}.ics`;
+
+        const calendarButtonHtml = `
+            <div class="mt-6">
+                <a href="${icsBlobUrl}" download="${fileName}" class="btn btn-primary text-primary-content font-semibold w-full uppercase tracking-wider text-xs gap-2 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    Add to calendar (ICS)
+                </a>
+            </div>
+        `;
+
+        modalTitle.innerHTML = `🪩 ${titleText}`;
+        modalContent.innerHTML = `
+            <div class="space-y-2.5">
+                ${eventDateHtml}
+                ${venueHtml}
+                ${linkHtml}
+                ${playtimeSectionHtml}
+                ${calendarButtonHtml}
+            </div>
+        `;
+        modal.showModal();
+    }
+
+    // Gigs laden und Tabelle befüllen
+    async function loadGigs() {
+        if (!tableBody) return;
+
+        try {
+            const response = await fetch(webAppUrl);
+            const data = await response.json();
+            tableBody.innerHTML = '';
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            const validGigs = data.filter(gig => {
+                const rawDate = gig.eventStartDate || gig.setStartDate;
+                const parsed = parseSheetDate(rawDate);
+                const gigDate = parsed ? new Date(parsed) : new Date(gig.timestamp || gig.sortDate);
+                return gigDate >= yesterday;
+            });
+
+            if (validGigs.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="3" class="py-8 text-center opacity-70 text-sm">Keine aktuellen Gigs verfügbar.</td></tr>`;
+                return;
+            }
+
+            validGigs.sort((a, b) => {
+                const rawA = a.eventStartDate || a.setStartDate;
+                const rawB = b.eventStartDate || b.setStartDate;
+                const dateA = parseSheetDate(rawA) ? new Date(parseSheetDate(rawA)) : new Date(a.timestamp || a.sortDate || 0);
+                const dateB = parseSheetDate(rawB) ? new Date(parseSheetDate(rawB)) : new Date(b.timestamp || b.sortDate || 0);
+                return dateA - dateB;
+            });
+
+            let currentMonthKey = '';
+
+            validGigs.forEach((gig, index) => {
+                const eventTitleClean = (gig.title || "").toString().toLowerCase().replace(/[^a-z]/g, '');
+                const isPrivate = eventTitleClean === 'privateevent';
+
+                const dateSource = gig.eventStartDate || gig.setStartDate;
+                let formattedDate = dateSource;
+                let countdownHTML = '';
+                let monthKey = 'TBA';
+                let monthLabel = 'TBA / Soon';
+                
+                if (dateSource) {
+                    try {
+                        const safeDateStr = parseSheetDate(dateSource);
+                        const dObj = new Date(safeDateStr);
+                        if (!isNaN(dObj)) {
+                            monthKey = `${dObj.getFullYear()}-${dObj.getMonth()}`;
+                            monthLabel = dObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toUpperCase();
+
+                            formattedDate = dObj.toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: '2-digit',
+                                year: 'numeric'
+                            }).toUpperCase();
+
+                            const gigMidnight = new Date(safeDateStr);
+                            gigMidnight.setHours(0, 0, 0, 0);
+                            const diffTime = gigMidnight - today;
+                            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+                            if (diffDays === 0) {
+                                countdownHTML = `<div class="text-xs text-primary font-bold uppercase tracking-wider mt-0.5">Today</div>`;
+                            } else if (diffDays === 1) {
+                                countdownHTML = `<div class="text-xs opacity-75 font-semibold uppercase tracking-wider mt-0.5">Tomorrow</div>`;
+                            } else if (diffDays > 1) {
+                                countdownHTML = `<div class="text-xs opacity-75 font-semibold uppercase tracking-wider mt-0.5">${diffDays} days left</div>`;
+                            }
+                        }
+                    } catch (e) {
+                        formattedDate = dateSource;
+                    }
+                }
+
+                if (monthKey !== currentMonthKey) {
+                    currentMonthKey = monthKey;
+                    const headerTr = document.createElement('tr');
+                    headerTr.className = 'bg-primary text-primary-content font-display font-black text-sm uppercase tracking-widest shadow-md';
+                    headerTr.innerHTML = `<td colspan="3" class="py-4 px-6">${monthLabel}</td>`;
+                    tableBody.appendChild(headerTr);
+                }
+
+                let col2HTML = '';
+                if (gig.title && gig.venue) {
+                    col2HTML = `
+                        <div class="font-bold text-base-content">${gig.title}</div>
+                        <div class="text-xs font-medium opacity-80 mt-0.5">${gig.venue}</div>
+                    `;
+                } else if (gig.title) {
+                    col2HTML = `<div class="font-bold text-base-content">${gig.title}</div>`;
+                } else if (gig.venue) {
+                    col2HTML = `<div class="font-bold text-base-content">${gig.venue}</div>`;
+                } else {
+                    col2HTML = `<div class="font-bold text-base-content">Event</div>`;
+                }
+
+                let rightButtonsHTML = '';
+                if (!isPrivate) {
+                    rightButtonsHTML = `<div class="flex items-center justify-end gap-1.5 flex-wrap">`;
+
+                    rightButtonsHTML += `
+                        <button class="more-info-btn btn btn-xs btn-primary text-primary-content font-bold uppercase tracking-wider gap-1 hover:brightness-110" title="Event details">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </button>
+                    `;
+
+                    if (gig.address) {
+                        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gig.address)}`;
+                        rightButtonsHTML += `
+                            <a href="${mapsUrl}" target="_blank" class="btn btn-xs btn-secondary text-secondary-content font-bold uppercase tracking-wider gap-1 hover:brightness-110" title="Google Maps">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </a>
+                        `;
+                    }
+
+                    if (gig.link) {
+                        rightButtonsHTML += `
+                            <a href="${gig.link}" target="_blank" class="btn btn-xs btn-accent text-accent-content font-bold uppercase tracking-wider gap-1 hover:brightness-110" title="Link/Tickets">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                        `;
+                    }
+
+                    const icsUrl = generateIcsBlobUrl(gig);
+                    const fileName = `${(gig.title || 'event').toLowerCase().replace(/[^a-z0-9]/g, '-')}.ics`;
+
+                    rightButtonsHTML += `
+                        <a href="${icsUrl}" download="${fileName}" class="btn btn-xs btn-info text-info-content font-bold uppercase tracking-wider gap-1 hover:brightness-110" title="Add to calendar (ICS)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </a>
+                    `;
+
+                    rightButtonsHTML += `</div>`;
+                }
+
+                const tr = document.createElement('tr');
+                let trClass = 'border-b border-base-200 hover:bg-base-200/50 transition-colors';
+                if (!isPrivate) {
+                    trClass += ' cursor-pointer';
+                }
+                if (index === 0) {
+                    trClass += ' rainbow-aura font-semibold';
+                }
+                tr.className = trClass;
+                
+                tr.innerHTML = `
+                    <td class="py-5 px-6 whitespace-nowrap w-40">
+                        <div class="font-mono font-bold text-base-content">${formattedDate || 'TBA'}</div>
+                        ${countdownHTML}
+                    </td>
+                    <td class="py-5 px-6 flex-1">${col2HTML}</td>
+                    <td class="text-right py-5 px-6 whitespace-nowrap">${rightButtonsHTML}</td>
+                `;
+
+                if (!isPrivate) {
+                    tr.addEventListener('click', (e) => {
+                        if ((e.target as HTMLElement).closest('a') || (e.target as HTMLElement).closest('button')) {
+                            return;
+                        }
+                        openGigDetailsModal(gig);
+                    });
+
+                    const btn = tr.querySelector('.more-info-btn');
+                    if (btn) {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            openGigDetailsModal(gig);
+                        });
+                    }
+                }
+
+                tableBody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error('Fehler beim Laden der Gigs:', error);
+            if (tableBody) {
+                tableBody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-error text-sm font-semibold">Gigs konnten nicht geladen werden.</td></tr>`;
+            }
+        }
+    }
+
+    loadGigs();
+</script>

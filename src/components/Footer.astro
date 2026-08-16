@@ -1,0 +1,54 @@
+---
+// src/components/Footer.astro
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer footer-center p-10 bg-base-200 text-base-content opacity-90 border-t border-primary/20">
+    <aside>
+        <p class="text-xs font-medium">
+            © {currentYear} La Leona & Chris.Me • All Rights Reserved • 
+            <button id="open-imprint" class="hover:text-primary underline cursor-pointer font-semibold">Imprint</button>
+        </p>
+    </aside>
+</footer>
+
+<!-- IMPRINT MODAL -->
+<dialog id="imprint-modal" class="modal">
+    <div class="modal-box bg-base-100 shadow-2xl border border-primary/30 max-w-md text-left">
+        <h3 class="font-bold text-lg font-display flex items-center gap-2">Imprint</h3>
+        <div class="py-4 text-sm space-y-4">
+            <p>
+                Christoph Metzger<br>
+                Kreittmayrstrasse 16<br>
+                80335 Munich<br>
+                Germany
+            </p>
+            <div>
+                <h2 class="font-display font-bold text-base mb-1">Kontakt</h2>
+                <p>
+                    Telefon: +49 1577 3638871<br>
+                    E-Mail: leona.christoph@gmail.com
+                </p>
+            </div>
+        </div>
+        <div class="modal-action pt-2">
+            <form method="dialog" class="w-full">
+                <button class="btn btn-sm btn-outline border-primary/50 hover:bg-primary hover:border-primary hover:text-primary-content uppercase tracking-wider w-full font-semibold">Close</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>Close</button>
+    </form>
+</dialog>
+
+<script>
+    const openBtn = document.getElementById('open-imprint');
+    const modal = document.getElementById('imprint-modal') as HTMLDialogElement;
+
+    if (openBtn && modal) {
+        openBtn.addEventListener('click', () => {
+            modal.showModal();
+        });
+    }
+</script>

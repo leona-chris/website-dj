@@ -1,0 +1,212 @@
+<section id="gallery" class="py-24 px-8 max-w-4xl mx-auto">
+    <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Live Impressions</h2>
+    </div>
+
+    <!-- Unterabschnitt 1: Fotos -->
+    <div class="mb-16">
+        <div class="text-center mb-8">
+            <p class="text-sm opacity-80">A glimpse of the dancefloor magic.</p>
+        </div>
+
+        <div class="carousel carousel-center w-full space-x-4 p-4 bg-base-200/60 rounded-2xl shadow-xl border border-primary/20">
+            <!-- Foto 1 -->
+            <div class="carousel-item w-72 md:w-80">
+                <div class="photo-trigger relative w-full rounded-xl overflow-hidden shadow-lg bg-base-100 aspect-square group cursor-pointer border border-primary/20" data-index="0">
+                    <img src="./img/leona_chris_1.webp" loading="lazy" alt="La Leona & Chris.Me Moment 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                    </div>
+                </div>
+            </div>
+            <!-- Foto 2 -->
+            <div class="carousel-item w-72 md:w-80">
+                <div class="photo-trigger relative w-full rounded-xl overflow-hidden shadow-lg bg-base-100 aspect-square group cursor-pointer border border-primary/20" data-index="1">
+                    <img src="./img/leona_chris_2.webp" loading="lazy" alt="La Leona & Chris.Me Moment 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                    </div>
+                </div>
+            </div>
+            <!-- Foto 3 -->
+            <div class="carousel-item w-72 md:w-80">
+                <div class="photo-trigger relative w-full rounded-xl overflow-hidden shadow-lg bg-base-100 aspect-square group cursor-pointer border border-primary/20" data-index="2">
+                    <img src="./img/leona_chris_3.webp" loading="lazy" alt="La Leona & Chris.Me Moment 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                    </div>
+                </div>
+            </div>
+            <!-- Foto 4 -->
+            <div class="carousel-item w-72 md:w-80">
+                <div class="photo-trigger relative w-full rounded-xl overflow-hidden shadow-lg bg-base-100 aspect-square group cursor-pointer border border-primary/20" data-index="3">
+                    <img src="./img/leona_chris_4.webp" loading="lazy" alt="La Leona & Chris.Me Moment 4" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kleine Unterteilung zwischen Foto- und Video-Karussell -->
+    <div class="divider divider-primary max-w-xs mx-auto my-12 opacity-20"></div>
+
+    <!-- Unterabschnitt 2: Videos -->
+    <div id="videos">
+        <div class="text-center mb-8">
+            <p class="text-sm opacity-80">Live impressions and energetic highlights.</p>
+        </div>
+
+        <div class="carousel carousel-center w-full space-x-4 p-4 bg-base-200/60 rounded-2xl shadow-xl border border-primary/20">
+            <!-- Video 1 bis 6 (mit data-index attributen) -->
+            {
+                [1, 2, 3, 4, 5, 6].map((num, idx) => (
+                    <div class="carousel-item w-72 md:w-80">
+                        <div class="video-trigger relative w-full rounded-xl overflow-hidden shadow-lg bg-base-100 aspect-video group cursor-pointer border border-primary/20" data-index={idx}>
+                            <video preload="metadata" muted playsinline class="w-full h-full object-cover pointer-events-none">
+                                <source src={`./vid/leona_chris_${num}.mp4#t=0.001`} type="video/mp4" />
+                            </video>
+                            <div class="absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity group-hover:bg-black/40">
+                                <div class="w-12 h-12 rounded-full bg-primary/90 text-primary-content flex items-center justify-center shadow-md transition-transform group-hover:scale-110">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<!-- MODAL FÜR FOTOS -->
+<dialog id="photo-modal" class="modal">
+    <div class="modal-box bg-base-100/95 backdrop-blur-md shadow-2xl border border-primary/30 max-w-4xl p-6 text-center relative">
+        <div class="relative flex items-center justify-center">
+            <button id="prev-photo-btn" class="absolute left-0 z-10 btn btn-circle btn-sm bg-base-100/90 hover:bg-primary hover:text-primary-content border-primary/30 shadow-md">❮</button>
+            <img id="modal-photo-img" src="" alt="Vollbild" class="w-full max-h-[75vh] object-contain rounded-xl mx-auto shadow-lg" />
+            <button id="next-photo-btn" class="absolute right-0 z-10 btn btn-circle btn-sm bg-base-100/90 hover:bg-primary hover:text-primary-content border-primary/30 shadow-md">❯</button>
+        </div>
+        <div class="modal-action pt-4 justify-center">
+            <form method="dialog">
+                <button class="btn btn-sm btn-primary text-primary-content font-semibold uppercase tracking-wider px-6 shadow-md">Close</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>Close</button></form>
+</dialog>
+
+<!-- MODAL FÜR VIDEOS -->
+<dialog id="video-modal" class="modal">
+    <div class="modal-box bg-base-100/95 backdrop-blur-md shadow-2xl border border-primary/30 max-w-4xl p-6 text-center relative">
+        <div class="relative flex items-center justify-center">
+            <button id="prev-video-btn" class="absolute left-0 z-10 btn btn-circle btn-sm bg-base-100/90 hover:bg-primary hover:text-primary-content border-primary/30 shadow-md">❮</button>
+            <video id="modal-video-player" controls autoplay class="w-full max-h-[75vh] rounded-xl mx-auto shadow-lg">
+                <source id="modal-video-source" src="" type="video/mp4">
+            </video>
+            <button id="next-video-btn" class="absolute right-0 z-10 btn btn-circle btn-sm bg-base-100/90 hover:bg-primary hover:text-primary-content border-primary/30 shadow-md">❯</button>
+        </div>
+        <div class="modal-action pt-4 justify-center">
+            <form method="dialog">
+                <button id="close-video-btn" class="btn btn-sm btn-primary text-primary-content font-semibold uppercase tracking-wider px-6 shadow-md">Close</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button id="backdrop-close-video-btn">Close</button></form>
+</dialog>
+
+<script>
+    import { photos, videos, enableSwipe } from '../utils/galleryHelpers.js';
+
+    let currentPhotoIndex = 0;
+    let currentVideoIndex = 0;
+
+    // Foto Elemente
+    const photoModal = document.getElementById('photo-modal') as HTMLDialogElement;
+    const modalPhotoImg = document.getElementById('modal-photo-img') as HTMLImageElement;
+    const nextPhotoBtn = document.getElementById('next-photo-btn');
+    const prevPhotoBtn = document.getElementById('prev-photo-btn');
+    const photoTriggers = document.querySelectorAll('.photo-trigger');
+
+    // Video Elemente
+    const videoModal = document.getElementById('video-modal') as HTMLDialogElement;
+    const modalVideoPlayer = document.getElementById('modal-video-player') as HTMLVideoElement;
+    const modalVideoSource = document.getElementById('modal-video-source') as HTMLSourceElement;
+    const nextVideoBtn = document.getElementById('next-video-btn');
+    const prevVideoBtn = document.getElementById('prev-video-btn');
+    const videoTriggers = document.querySelectorAll('.video-trigger');
+    const closeVideoBtn = document.getElementById('close-video-btn');
+    const backdropCloseVideoBtn = document.getElementById('backdrop-close-video-btn');
+
+    // --- FOTO LOGIK ---
+    function updatePhotoModal() {
+        if (modalPhotoImg) modalPhotoImg.src = photos[currentPhotoIndex];
+    }
+
+    function nextPhoto() {
+        currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+        updatePhotoModal();
+    }
+
+    function prevPhoto() {
+        currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+        updatePhotoModal();
+    }
+
+    photoTriggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            const target = e.currentTarget as HTMLElement;
+            currentPhotoIndex = parseInt(target.dataset.index || '0', 10);
+            updatePhotoModal();
+            if (photoModal) photoModal.showModal();
+        });
+    });
+
+    if (nextPhotoBtn) nextPhotoBtn.addEventListener('click', nextPhoto);
+    if (prevPhotoBtn) prevPhotoBtn.addEventListener('click', prevPhoto);
+
+    // --- VIDEO LOGIK ---
+    function updateVideoModal() {
+        if (modalVideoPlayer && modalVideoSource) {
+            modalVideoSource.src = videos[currentVideoIndex];
+            modalVideoPlayer.load();
+            modalVideoPlayer.play();
+        }
+    }
+
+    function nextVideo() {
+        currentVideoIndex = (currentVideoIndex + 1) % videos.length;
+        updateVideoModal();
+    }
+
+    function prevVideo() {
+        currentVideoIndex = (currentVideoIndex - 1 + videos.length) % videos.length;
+        updateVideoModal();
+    }
+
+    function stopVideo() {
+        if (modalVideoPlayer) {
+            modalVideoPlayer.pause();
+            modalVideoPlayer.currentTime = 0;
+        }
+    }
+
+    videoTriggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            const target = e.currentTarget as HTMLElement;
+            currentVideoIndex = parseInt(target.dataset.index || '0', 10);
+            updateVideoModal();
+            if (videoModal) videoModal.showModal();
+        });
+    });
+
+    if (nextVideoBtn) nextVideoBtn.addEventListener('click', nextVideo);
+    if (prevVideoBtn) prevVideoBtn.addEventListener('click', prevVideo);
+    if (closeVideoBtn) closeVideoBtn.addEventListener('click', stopVideo);
+    if (backdropCloseVideoBtn) backdropCloseVideoBtn.addEventListener('click', stopVideo);
+
+    // Swipe-Funktionen aktivieren
+    enableSwipe('photo-modal', nextPhoto, prevPhoto);
+    enableSwipe('video-modal', nextVideo, prevVideo);
+</script>

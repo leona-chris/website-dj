@@ -1,0 +1,134 @@
+---
+// src/components/History.astro
+import historyData from '../data/history.json';
+import allCountries from '../data/countries.json';
+
+// Präzise ISO-Code-Erkennung mittels Wortgrenzen (\b) gegen Fehltrüffer
+function getCountryCode(countryStr) {
+    if (!countryStr) return '';
+
+    for (const country of allCountries) {
+        const common = country.name?.common;
+        const official = country.name?.official;
+
+        // Prüft, ob der Ländername als eigenständiges Wort im String vorkommt
+        if (common) {
+            const regex = new RegExp(`\\b${common}\\b`, 'i');
+            if (regex.test(countryStr)) {
+                return country.cca2.toLowerCase();
+            }
+        }
+        if (official) {
+            const regex = new RegExp(`\\b${official}\\b`, 'i');
+            if (regex.test(countryStr)) {
+                return country.cca2.toLowerCase();
+            }
+        }
+    }
+    return '';
+}
+
+// Alphabetische Sortierung der drei Sektionen
+const sortedFestivals = [...historyData.festivals].sort((a, b) => a.name.localeCompare(b.name));
+const sortedClubs = [...historyData.clubs].sort((a, b) => a.name.localeCompare(b.name));
+const sortedCollectives = [...historyData.collectives].sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<section id="history" class="py-24 px-8 max-w-6xl mx-auto">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Where We've Played</h2>
+        <p class="text-sm opacity-80 mt-2">A look back at past festivals, gatherings, clubs, and collectives.</p>
+    </div>
+
+    <!-- Grid mit 3 Spalten -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- 1. Festivals Spalte -->
+        <div class="bg-base-200/80 p-6 rounded-2xl shadow-xl border border-primary/25 flex flex-col justify-between">
+            <div>
+                <h3 class="font-display font-bold text-base mb-6 pb-3 border-b border-primary/20 text-center">
+                    Festivals & Gatherings
+                </h3>
+                <ul class="list bg-base-100 rounded-xl shadow-md border border-primary/15 divide-y divide-primary/10 text-xs">
+                    {sortedFestivals.map((item) => {
+                        const code = getCountryCode(item.country);
+                        return (
+                            <li class="p-3.5 hover:bg-primary/5 transition-colors flex flex-col gap-1">
+                                <span class="font-bold text-sm">{item.name}</span>
+                                <div class="opacity-80 flex justify-between items-center w-full">
+                                    <span>{item.country}</span>
+                                    {code && (
+                                        <img 
+                                            src={`https://flagcdn.com/${code}.svg`} 
+                                            alt={item.country} 
+                                            class="w-4 h-3 rounded-[2px] shadow-xs object-cover shrink-0" 
+                                        />
+                                    )}
+                                </div>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 2. Clubs Spalte -->
+        <div class="bg-base-200/80 p-6 rounded-2xl shadow-xl border border-primary/25 flex flex-col justify-between">
+            <div>
+                <h3 class="font-display font-bold text-base mb-6 pb-3 border-b border-primary/20 text-center">
+                    Clubs
+                </h3>
+                <ul class="list bg-base-100 rounded-xl shadow-md border border-primary/15 divide-y divide-primary/10 text-xs">
+                    {sortedClubs.map((club) => {
+                        const code = getCountryCode(club.country);
+                        return (
+                            <li class="p-3.5 hover:bg-primary/5 transition-colors flex justify-between items-center w-full">
+                                <span class="font-semibold text-sm">{club.name}</span>
+                                <span class="opacity-80 flex items-center gap-1.5">
+                                    <span>{club.city}</span>
+                                    {code && (
+                                        <img 
+                                            src={`https://flagcdn.com/${code}.svg`} 
+                                            alt={club.country} 
+                                            class="w-4 h-3 rounded-[2px] shadow-xs object-cover shrink-0" 
+                                        />
+                                    )}
+                                </span>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 3. Collectives Spalte -->
+        <div class="bg-base-200/80 p-6 rounded-2xl shadow-xl border border-primary/25 flex flex-col justify-between">
+            <div>
+                <h3 class="font-display font-bold text-base mb-6 pb-3 border-b border-primary/20 text-center">
+                    Collectives
+                </h3>
+                <ul class="list bg-base-100 rounded-xl shadow-md border border-primary/15 divide-y divide-primary/10 text-xs">
+                    {sortedCollectives.map((collective) => {
+                        const code = getCountryCode(collective.country);
+                        return (
+                            <li class="p-3.5 hover:bg-primary/5 transition-colors flex justify-between items-center w-full">
+                                <span class="font-semibold text-sm">{collective.name}</span>
+                                <span class="opacity-80 flex items-center gap-1.5">
+                                    <span>{collective.city}</span>
+                                    {code && (
+                                        <img 
+                                            src={`https://flagcdn.com/${code}.svg`} 
+                                            alt={collective.country} 
+                                            class="w-4 h-3 rounded-[2px] shadow-xs object-cover shrink-0" 
+                                        />
+                                    )}
+                                </span>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</section>
