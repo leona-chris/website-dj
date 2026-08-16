@@ -1,10 +1,42 @@
 <nav class="sticky top-0 z-50 bg-base-100/80 backdrop-blur-lg border-b border-primary/10 shadow-sm py-4">
     <div class="max-w-4xl mx-auto flex flex-wrap justify-center gap-4 md:gap-8 text-xs md:text-sm font-bold uppercase tracking-widest px-4">
-        <a href="#about" class="hover:text-primary transition-colors">About Us</a>
-        <a href="#music" class="hover:text-primary transition-colors">Sound</a>
-        <a href="#gallery" class="hover:text-primary transition-colors">Impressions</a>
-        <a href="#gigs" class="hover:text-primary transition-colors">Gigs</a>
-        <a href="#history" class="hover:text-primary transition-colors">History</a>
-        <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+        <a href="#about" class="hover:text-primary transition-colors nav-link">About Us</a>
+        <a href="#music" class="hover:text-primary transition-colors nav-link">Sound</a>
+        <a href="#gallery" class="hover:text-primary transition-colors nav-link">Impressions</a>
+        <a href="#gigs" class="hover:text-primary transition-colors nav-link">Gigs</a>
+        <a href="#history" class="hover:text-primary transition-colors nav-link">History</a>
+        <a href="#contact" class="hover:text-primary transition-colors nav-link">Contact</a>
     </div>
 </nav>
+
+<script>
+    // Alle Sektionen und Nav-Links finden
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    const observerOptions = {
+        root: null, // Sichtfenster des Browsers
+        threshold: 0.4, // Aktivieren, wenn 40% der Sektion sichtbar sind
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                // Den aktuellen ID-Namen holen
+                const id = entry.target.getAttribute("id");
+                
+                // Alle Links durchgehen
+                navLinks.forEach((link) => {
+                    link.classList.remove("text-primary", "font-bold"); // Active-Styles entfernen
+                    
+                    if (link.getAttribute("href") === `#${id}`) {
+                        link.classList.add("text-primary", "font-bold"); // Active-Styles hinzufügen
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    // Alle Sektionen beobachten
+    sections.forEach((section) => observer.observe(section));
+</script>
