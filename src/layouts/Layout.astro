@@ -1,19 +1,23 @@
 ---
+import { ClientRouter } from 'astro:transitions';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
 interface Props {
-  title: string;
+	title: string;
 }
 
 const { title } = Astro.props;
 
-import '../styles/global.css';
 ---
 
 <!DOCTYPE html>
-<html lang="de" data-theme="pastel" class="scroll-smooth">
+<html lang="en" data-theme="pastel" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width">
     <title>{title}</title>
+    <ClientRouter />
     <!-- Google Fonts: Syne & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +26,7 @@ import '../styles/global.css';
     <!-- SOUNDCLOUD API (Einmalig für alle Komponenten) -->
     <script is:inline src="https://w.soundcloud.com/player/api.js"></script>
 </head>
-<body class="bg-base-100 text-base-content min-h-screen selection:bg-primary selection:text-primary-content">
+<body class="bg-base-100 text-base-content">
     <slot />
 </body>
 </html>
